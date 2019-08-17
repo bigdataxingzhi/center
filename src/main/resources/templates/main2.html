@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="css/normalize.css">
+<!-- 		<link rel="stylesheet" type="text/css" href="css/demo.css">
+ -->		<!-- common styles -->
+		<link rel="stylesheet" type="text/css" href="css/dialog.css">
+		<!-- individual effect -->
+		<link rel="stylesheet" type="text/css" href="css/dialog-jim.css">
+		<script src="js/snap.svg-min.js"></script>
+		<script src="js/modernizr.custom.js"></script>
+<script type="text/javascript" src="/boot/js/jquery-1.12.4.min.js"></script>
+
+<link href="/boot/bootstrap-3.3.7-dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<style type = "text/css"> 
+a {font-size:18px} 
+a:link:{color: rgb(190,143,0);text-decoration:none;}
+a:active:{color: red; }
+a:visited {color:purple;text-decoration:none;}
+a:hover {color: red; text-decoration:underline;}
+
+
+		/* 本例子css */
+		.picMarquee-top{ margin:0 auto;  width:100%; overflow:hidden; position:relative;  border:1px solid #ccc;   }
+		.picMarquee-top .hd{ overflow:hidden;  height:30px; background:#f4f4f4; padding:0 10px;  }
+		.picMarquee-top .hd .prev,.picMarquee-top .hd .next{ display:block;  width:100%; height:5px; float:right; margin-right:5px; margin-top:10px;  overflow:hidden;
+			 cursor:pointer; background:url("/images/arrow.png") 0 100px no-repeat;}
+		.picMarquee-top .hd .next{ background-position:0 -140px;  }
+		.picMarquee-top .hd .prevStop{ background-position:-60px -100px;  }
+		.picMarquee-top .hd .nextStop{ background-position:-60px -140px;  }
+		.picMarquee-top .bd{ padding:10px;   }
+		.picMarquee-top .bd ul{ overflow:hidden; zoom:1; }
+		.picMarquee-top .bd ul li{ text-align:center; zoom:1; }
+		.picMarquee-top .bd ul li .pic{ text-align:center; }
+		.picMarquee-top .bd ul li .pic img{ width:100%; height:90px; display:block; padding:2px; border:1px solid #ccc; }
+		.picMarquee-top .bd ul li .pic a:hover img{ border-color:#999;  }
+		.picMarquee-top .bd ul li .title{ line-height:24px;   }
+		
+
+</style> 
+
+<script src="/boot/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="/boot/angularjs/angular.min.js"></script>
+	<!-- 分页组件开始 -->
+	<script src="/boot/angularjs/pagination.js"></script>
+	<script src="/boot/js/jquery.SuperSlide.2.1.1.js"></script>
+	<link rel="stylesheet" href="/boot/angularjs/pagination.css">
+	<!-- 分页组件结束 -->
+
+<script type="text/javascript">
+	$(function() {
+		var searchValue = "";
+		var hotPage=1;
+	/* 	setInterval(function() {
+			searchValue = $("#search").val();
+		}, 100); */
+
+		$("select").change(function() {
+			$("#search").val($(this).children('option:selected').val());
+			$(this).empty();
+			$(this).hide();
+		});
+
+		$("#search").keypress(function(event) {
+			if (event.shiftKey==1){
+				return ;
+			}else{
+			$("select").empty();
+			$("select").hide();
+		/* 	if ($(this).val() == searchValue) {
+
+			} else {
+				if(searchValue!=""){ */
+					
+				$.ajax({
+					url:"/search/suggest",
+					type:"GET",
+					data:{"prefix":$(this).val()} ,
+					success:function(result){
+						$.each(result,function(){
+							//alert(this);
+							var optionEle = $("<option  style='background-color:#FFFFFF; color: red;'></option>").append(this).attr("value",this);
+							optionEle.appendTo($("select"));
+						});
+					}
+				});
+				
+				
+				/* } */
+				$("select").show();
+			}
+			/* }
+ */
+		});
+
+		  $("body").dblclick(function() {
+			  
+			$("select").empty();
+			$("select").hide();
+          return false;
+		});  
+
+		function getRequestParam(param) {
+			var requestString = location.search;
+			var reg = new RegExp("(?:\\?|&)" + param + "(.*?)(?:&|$)");
+			if (reg.test(requestString)) {
+				return decodeURIComponent(RegExp.$1);
+			} else {
+				return "";
+			}
+		}
+		$("#search").focus();
+
+		var q = getRequestParam("q");
+		q = q.substr(1, q.length)
+
+		if (q != "") {
+			$("#search").val(q);
+			//发送ajax，展示select
+			$.ajax({
+					url:"/search/suggest",
+					type:"GET",
+					data:{"prefix":q} ,
+					success:function(result){
+						$("select").empty();
+						$.each(result,function(){
+							//alert(this);
+							var optionEle = $("<option  style='background-color:#FFFFFF; color: red;'></option>").append(this).attr("value",this);
+							optionEle.appendTo($("select"));
+						});
+
+						$("#search").next().show();
+					}
+				});
+			
+			}
+		
+		 $(".link").each(function(i){
+			 
+			$(this).click(function() {
+					$(this).attr("disabled", "disabled");
+					var value = $(this).next().val();
+					var span = $(this).children("span").removeClass(
+							"glyphicon glyphicon-heart-empty").addClass(
+							"glyphicon glyphicon-heart");//.addClass("glyphicon glyphicon-heart")
+				
+							var spanvalue = $(this).children("span").text();
+							spanvalue = eval(parseInt(spanvalue) + 1);
+					$(this).children("span").html(spanvalue);
+					 $.ajax({
+						url:"/search/love",
+						type:"GET",
+						data:{"docId":value,"love":spanvalue} ,
+						success:function(){
+							$('#myModal').modal() ;// 以默认值初始化
+							$('#myModal').modal({
+								keyboard : true
+							}); // initialized with no keyboard
+							$('#myModal').modal('show');
+						}
+					}); 
+		});
+				
+				 }); 
+			 
+	
+		
+		$("#previous").click(function(){
+			if(hotPage==1){
+				return;
+			}else{
+				$("#hot"+(hotPage-1)).click();
+				
+			}
+		});
+		
+		$("#next").click(function(){
+			if(hotPage==5){
+				return;
+			}else{
+				$("#hot"+(hotPage+1)).click();
+				
+			}
+		});
+		
+		$(".hotsearch").click(function(){
+			$(".hotsearch").parent().removeClass("active");
+			$("#previous").parent().removeClass("disabled");
+			$("#next").parent().removeClass("disabled");
+			$(this).parent().addClass("active");
+			if($(this).children().text()=="1"){
+				//alert("ll");
+				$("#previous").parent().addClass("disabled");
+			}
+			if($(this).children().text()=="5"){
+				//alert("ll");
+				$("#next").parent().addClass("disabled");
+			}
+			
+			findHotData($(this).children().text());
+		});
+		
+		function changeHotdata(page){
+			$("#hotbody").empty();
+			// 发送ajax请求热点数据
+			
+				$.ajax({
+					url:"/search/aggHotdate",
+					type:"GET",
+					data:{"page":page} ,
+					success:function(result){
+						for(var i = 1; i<=result.length;i++){
+							
+							var currentNum = getCurrentNum(page,i);
+							var down = result[i-1].rank;
+							var classStyle="glyphicon glyphicon-sort-by-attributes-alt";
+							if(down){
+								classStyle="glyphicon glyphicon-sort-by-attributes";
+							}
+								
+							$("#hotbody").append("<tr><td><span><span class='badge' style='color: red;'>"+currentNum+"</span>&nbsp;<a style='color: rgb(190,143,0);font-size: 16px;font-family: \"Segoe Script\"; font-style: italic' target='_blank' title='"+result[i-1].dataInfo+"' href='/search/detail/"+result[i-1].docId+"' >"+result[i-1].dataInfo+"</a> </span></td><td>"+result[i-1].count+"&nbsp;<i class='"+classStyle+"'></i></td></tr>");
+							
+						}
+					}
+				});
+		
+		}
+		function getCurrentNum(page,item){
+			var currentNum = (page-1)*6+item;
+			return currentNum;
+		}
+		function findHotData(page){
+			hotPage=parseInt(page);
+			changeHotdata(page);
+			//alert(hotPage);
+		}
+		
+		$("#hot1").click();
+	});
+</script>
+
+<script type="text/javascript">
+var page=1;
+	var init = 1;
+
+var listLeft = null;
+var app=angular.module("essearch",['pagination']);
+app.controller("searchlist",function($scope,$http){
+	$scope.search=function(page,size,param){
+		//alert(page);
+		
+		$http.get("/search/searchData?param="+param+"&page="+page +"&size="+size).success(
+			function(response){
+				if(response.total>0){
+				listLeft=response.rows;//显示当前页数据 	
+				$scope.total = response.total;
+				$scope.gusses=response.gusses;
+				$scope.paginationConf.totalItems=response.total;//更新总记录数 
+				for(var i =1;i<=5;i++){
+					$("#groupinfo"+i).children().empty();
+					$("#grouptr"+i).hide();
+
+				}
+				for(var i =1;i<=listLeft.length;i++){
+					$("#groupinfo"+i).children().append(listLeft[i-1].info);
+					$("#groupId"+i).val(listLeft[i-1].docId);
+					$("#groupLabel"+i).html(listLeft[i-1].title);
+					$("#groupStar"+i).html("&nbsp;"+listLeft[i-1].count);
+					$("#groupDate"+i).html("&nbsp;"+listLeft[i-1].publishDate);
+					$("#groupDetail"+i).attr("href","/search/detail/"+listLeft[i-1].docId);
+					$("#groupLove"+i).html(listLeft[i-1].love);
+					$("#grouplike"+i).val(listLeft[i-1].docId);
+					$("#grouptr"+i).show();
+				} 
+				$("#searchdata").show();
+				}else{
+					listLeft=response.rows;//显示当前页数据 	
+					$scope.total = response.total;
+					$scope.paginationConf.totalItems=response.total;//更新总记录数 
+					for(var i =1;i<=5;i++){
+						$("#groupinfo"+i).children().empty();
+						$("#grouptr1"+i).hide();
+
+					}
+					$("#searchdata").hide();
+
+				}
+			}		
+		);	
+		
+
+		
+		//alert("search方法");
+		
+		
+	
+
+	}
+	
+	
+	//分页控件配置currentPage:当前页   totalItems :总记录数  itemsPerPage:每页记录数  perPageOptions :分页选项  onChange:当页码变更后自动触发的方法 
+	$scope.paginationConf = {
+		currentPage: 1,
+		totalItems: 10,
+		itemsPerPage: 5,
+		perPageOptions: [5,8,10],
+		onChange: function(){
+			$scope.reloadList();
+		}
+	};
+		
+	
+	//刷新列表
+	$scope.reloadList=function(){
+		var q = $("#search").val();
+		//alert("哦，搜索参数为："+q);
+		$scope.search( $scope.paginationConf.currentPage ,  $scope.paginationConf.itemsPerPage,q);
+		
+	}
+	
+	$scope.searchbutton=function(){
+		$("select").empty();
+		$("select").hide();
+		$scope.reloadList();
+	}
+	
+ 
+});
+
+
+</script>
+</head>
+
+
+<!-- 标头部分 -->
+
+<!-- 主体部分 -->
+<!-- 左半边搜索区域展示 -->
+<body ng-app="essearch" ng-controller="searchlist">
+
+<div>
+	<!-- 标头部分 -->
+	<nav class="navbar navbar-default">
+
+		<br/> <br/>
+
+		<div class="row">
+			<div class="col-md-2">
+				<img alt="搜索" src="static/boot/2018-08-16_093754.jpg" width="150px"
+					class="img-circle" />
+			</div>
+			<div class="col-md-6">
+				<form class="form-horizontal">
+					<div class="form-group form-group-lg">
+						<div class="col-sm-9">
+							<div class="input-group input-group-lg col-sm-12">
+							<span class="input-group-addon glyphicon glyphicon-refresh" id="sizing-addon1"></span>
+							<input class="form-control"  style="font-size: 20px;font-family: 'Consolas';font-style:oblique ;" 
+							id="search" type="text"
+								name="keyword" autocomplete="off" 
+								placeholder="Search for whatever you want"/>
+							
+								<span style="display: none"> 
+								<select style="font-size: 24px;font-family: 'Consolas';font-style: italic;"
+								id="#searchselect"
+								multiple class="form-control">
+									<option value="1">1</option>
+									<option style="background-color:#FFFFFF; color: red;">2</option>
+									<option class="badge">3</option>
+									<option>4</option>
+									<option>5</option>
+							</select>
+							</span>
+								</div>
+						</div>
+						<label class="col-sm-2 control-label" for="formGroupInputLarge">
+							<button type="button" class="btn btn-success glyphicon glyphicon-search" ng-click="searchbutton()">&nbsp;搜索</button>
+						</label>
+					</div>
+				</form>
+
+			</div>
+
+			<div class="col-md-4">
+
+				<ul class="nav navbar-nav ">
+					<li><a href="#">Link</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">菜单<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/login.html">登录</a></li>
+							<li><a href="/register.html">注册</a></li>
+							<li><a href="/logout">注销</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="/index.html">用户信息详情</a></li>
+						</ul></li>
+				</ul>
+
+
+
+
+			</div>
+		</div>
+		
+	</nav>
+
+</div>
+
+
+	<div class="container-fluid" id="example-rand">
+	 <div class="row"> 
+		<div class="col-md-8">
+			
+		<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><p class=" text-warning lead text-center" style="font-size: 24px;font-family: 'Consolas';">Elasticsearch为您搜到了<i>{{total}}</i>条数据</p></div>
+  
+			<table class="table table-hover">
+
+
+				<tbody id="searchdata" hidden="hidden">
+
+					<!-- 第一组 -->
+					<tr id="grouptr1" >
+						<td>
+							<div class="col-md-12">
+								<input id="groupId1" type="hidden" class="inputValue"  />
+<div>
+								<ul class="list-unstyled list-group">
+									<li class="" id="grouptitle1" ><span class="label label-default" id="groupLabel1"></span></li>
+									
+									<li class="list-group-item" id="groupinfo1"><pre style="background: rgb(243,245,232);"><p><br/></p></pre> </li>
+									
+								</ul>
+								</div>
+								
+								<nav>
+  <ul class="pager">
+    <li class="previous "><a  class="label label-default badge" href="#"><span id="groupStar1" class="glyphicon glyphicon-star-empty badge">&nbsp;</span></a></li>
+    <li class="next"><a class="label label-default" href="#"><span id="groupDate1" class="glyphicon glyphicon-sort badge">&nbsp;</span></a></li>
+  </ul>
+</nav>
+								<ul class="list-inline list-group">
+									<li><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a id="groupDetail1" style="color: red;"  href="">click here</a></button></li>
+									<li ><button id="bb" data-dialog="somedialog" type="button" class="btn btn-link link" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span id="groupLove1"></span></span>
+										</button> <input id="grouplike1" type="hidden" class="inputValue"  /></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<!-- 第二组 -->
+					<tr id="grouptr2" >
+						<td>
+							<div class="col-md-12">
+								<input id="groupId2" type="hidden" class="inputValue"  />
+<div>
+								<ul class="list-unstyled list-group">
+									<li class="" id="grouptitle2" ><span class="label label-default" id="groupLabel2"></span></li>
+									
+									<li class="list-group-item" id="groupinfo2"><pre style="background: rgb(243,245,232);"><p><br/></p></pre> </li>
+									
+								</ul>
+								</div>
+								
+								<nav>
+  <ul class="pager">
+    <li class="previous "><a  class="label label-default badge" href="#"><span id="groupStar2" class="glyphicon glyphicon-star-empty badge">&nbsp;</span></a></li>
+    <li class="next"><a class="label label-default" href="#"><span id="groupDate2" class="glyphicon glyphicon-sort badge">&nbsp;</span></a></li>
+  </ul>
+</nav>
+								<ul class="list-inline list-group">
+									<li><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a id="groupDetail2" style="color: red;"  href="">click here</a></button></li>
+									<li ><button id="bb" data-dialog="somedialog" type="button" class="btn btn-link link" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span id="groupLove2"></span></span>
+										</button> <input id="grouplike2" type="hidden" class="inputValue"  /></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<!-- 第三组 -->
+					<tr id="grouptr3" >
+						<td>
+							<div class="col-md-12">
+								<input id="groupId3" type="hidden" class="inputValue"  />
+<div>
+								<ul class="list-unstyled list-group">
+									<li class="" id="grouptitle3" ><span class="label label-default" id="groupLabel3"></span></li>
+									
+									<li class="list-group-item" id="groupinfo3"><pre style="background: rgb(243,245,232);"><p><br/></p></pre> </li>
+									
+								</ul>
+								</div>
+								
+								<nav>
+  <ul class="pager">
+    <li class="previous "><a  class="label label-default badge" href="#"><span id="groupStar3" class="glyphicon glyphicon-star-empty badge">&nbsp;</span></a></li>
+    <li class="next"><a class="label label-default" href="#"><span id="groupDate3" class="glyphicon glyphicon-sort badge">&nbsp;</span></a></li>
+  </ul>
+</nav>
+								<ul class="list-inline list-group">
+									<li><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a id="groupDetail3" style="color: red;"  href="">click here</a></button></li>
+									<li ><button id="bb" data-dialog="somedialog" type="button" class="btn btn-link link" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span id="groupLove3"></span></span>
+										</button> <input id="grouplike3" type="hidden" class="inputValue"  /></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<!-- 第四组 -->
+					<tr id="grouptr4" >
+						<td>
+							<div class="col-md-12">
+								<input id="groupId4" type="hidden" class="inputValue"  />
+<div>
+								<ul class="list-unstyled list-group">
+									<li class="" id="grouptitle4" ><span class="label label-default" id="groupLabel4"></span></li>
+									
+									<li class="list-group-item" id="groupinfo4"><pre style="background: rgb(243,245,232);"><p><br/></p></pre> </li>
+									
+								</ul>
+								</div>
+								
+								<nav>
+  <ul class="pager">
+    <li class="previous "><a  class="label label-default badge" href="#"><span id="groupStar4" class="glyphicon glyphicon-star-empty badge">&nbsp;</span></a></li>
+    <li class="next"><a class="label label-default" href="#"><span id="groupDate4" class="glyphicon glyphicon-sort badge">&nbsp;</span></a></li>
+  </ul>
+</nav>
+								<ul class="list-inline list-group">
+									<li><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a id="groupDetail4" style="color: red;"  href="">click here</a></button></li>
+									<li ><button id="bb" data-dialog="somedialog" type="button" class="btn btn-link link" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span id="groupLove4"></span></span>
+										</button> <input id="grouplike4" type="hidden" class="inputValue"  /></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<!-- 第五组 -->
+					<tr id="grouptr5" >
+						<td>
+							<div class="col-md-12">
+								<input id="groupId5" type="hidden" class="inputValue"  />
+<div>
+								<ul class="list-unstyled list-group">
+									<li class="" id="grouptitle5" ><span class="label label-default" id="groupLabel5"></span></li>
+									
+									<li class="list-group-item" id="groupinfo5"><pre style="background: rgb(243,245,232);"><p><br/></p></pre> </li>
+									
+								</ul>
+								</div>
+								
+								<nav>
+  <ul class="pager">
+    <li class="previous "><a  class="label label-default badge" href="#"><span id="groupStar5" class="glyphicon glyphicon-star-empty badge">&nbsp;</span></a></li>
+    <li class="next"><a class="label label-default" href="#"><span id="groupDate5" class="glyphicon glyphicon-sort badge">&nbsp;</span></a></li>
+  </ul>
+</nav>
+								<ul class="list-inline list-group">
+									<li><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a id="groupDetail5" style="color: red;"  href="">click here</a></button></li>
+									<li ><button id="bb" data-dialog="somedialog" type="button" class="btn btn-link link" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span id="groupLove5"></span></span>
+										</button> <input id="grouplike5" type="hidden" class="inputValue"  /></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+					</table>
+					
+					<!--数据列表--> 
+			                 
+					<tm-pagination conf="paginationConf"></tm-pagination>   
+					</div>
+					</div>
+				
+				
+					
+		<!-- 左半边搜索区域展示 end -->
+
+
+		<!-- 右半边猜你会搜区域展示 start -->
+	
+		<div class="col-md-4">
+				<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><p class=" text-warning lead text-center" style="font-size: 24px;font-family: 'Consolas';">Guess you want to search ?</p></div>
+
+			
+			<div class="picMarquee-top">
+			<div class="hd">
+				<a class="next"></a>
+				<a class="prev"></a>
+			</div>
+			
+			<div class="bd">
+			
+		<ul class="picList" ng-repeat="gusses in gusses">
+				<li>
+			<table class="table table-hover">
+				<tbody>
+					<tr>
+					<td>
+						<div class="col-md-12">
+								<input type="hidden" class="inputValue" value="{{gusses.docId}}" />
+<div>
+								<ul class="list-unstyled">
+									<li><pre style="background: rgb(243,245,232);"><span class="glyphicon glyphicon-paperclip">&nbsp;</span><a  style="font-size: 18px;font-family: 'Consolas';">{{gusses.title}}</a></pre></li>
+									
+									<li><p class="text-right" style="font-size: 16px;font-family: 'Consolas';">发表时间：{{gusses.publishDate}}</p> </li>
+								</ul>
+								</div>
+								
+<nav>
+  <ul class="pager">
+    <li class="previous"><a  class="label label-default" href="#"><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a  style="color: red;"  href="/search/detail/{{gusses.docId}}">click here</a></button></a></li>
+    <li class="next"><a class="label label-default" href="#">
+    					<button id="bb" type="button" class="btn btn-link link " ><span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span>{{gusses.love}}</span></span>
+						</button> <input id="grouplike1" type="hidden" class="inputValue" value="{{gusses.docId}}" /></a></li>
+  </ul>
+</nav>
+							</div>
+					</td>
+					</tr>
+						</tbody>
+				</table>
+				
+					</li>
+			<!-- <li>
+			<table class="table table-hover">
+				<tbody>
+					<tr>
+					<td>
+						<div class="col-md-12">
+								<input type="hidden" class="inputValue" value="{{gusses[0].docId}}" />
+<div>
+								<ul class="list-unstyled">
+									<li><pre style="background: rgb(243,245,232);"><span class="glyphicon glyphicon-paperclip">&nbsp;</span><a  style="font-size: 18px;font-family: 'Consolas';">{{gusses[0].title}}</a></pre></li>
+									
+									<li><p class="text-right" style="font-size: 16px;font-family: 'Consolas';">发表时间：{{gusses[0].publishDate}}</p> </li>
+								</ul>
+								</div>
+								
+<nav>
+  <ul class="pager">
+    <li class="previous"><a  class="label label-default" href="#"><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a  style="color: red;"  href="/search/detail/{{gusses[0].docId}}">click here</a></button></a></li>
+    <li class="next"><a class="label label-default" href="#">
+    					<button id="bb" type="button" class="btn btn-link link " ><span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span>{{gusses[0].love}}</span></span>
+						</button> <input id="grouplike1" type="hidden" class="inputValue" value="{{gusses[0].docId}}" /></a></li>
+  </ul>
+</nav>
+							</div>
+					</td>
+					</tr>
+						</tbody>
+				</table>
+				
+					</li>
+					
+				<li>
+			<table class="table table-hover">
+				<tbody>
+					<tr>
+					<td>
+						<div class="col-md-12">
+								<input type="hidden" class="inputValue" value="{{gusses[1].docId}}" />
+<div>
+								<ul class="list-unstyled">
+									<li><pre style="background: rgb(243,245,232);"><span class="glyphicon glyphicon-paperclip">&nbsp;</span><a  style="font-size: 18px;font-family: 'Consolas';">{{gusses[1].title}}</a></pre></li>
+									
+									<li><p class="text-right" style="font-size: 16px;font-family: 'Consolas';">发表时间：{{gusses[1].publishDate}}</p> </li>
+								</ul>
+								</div>
+								
+<nav>
+  <ul class="pager">
+    <li class="previous"><a  class="label label-default" href="#"><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a  style="color: red;"  href="/search/detail/{{gusses[1].docId}}">click here</a></button></a></li>
+    <li class="next"><a class="label label-default" href="#">
+    					<button id="bb" type="button" class="btn btn-link link" ><span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span>{{gusses[1].love}}</span></span>
+						</button> <input id="grouplike1" type="hidden" class="inputValue" value="{{gusses[1].docId}}" /></a></li>
+  </ul>
+</nav>
+							</div>
+					</td>
+					</tr>
+						</tbody>
+				</table>
+				
+					</li>
+					<li>
+			<table class="table table-hover">
+				<tbody>
+					<tr>
+					<td>
+						<div class="col-md-12">
+								<input type="hidden" class="inputValue" value="{{gusses[2].docId}}" />
+<div>
+								<ul class="list-unstyled">
+									<li><pre style="background: rgb(243,245,232);"><span class="glyphicon glyphicon-paperclip">&nbsp;</span><a  style="font-size: 18px;font-family: 'Consolas';">{{gusses[2].title}}</a></pre></li>
+									
+									<li><p class="text-right" style="font-size: 16px;font-family: 'Consolas';">发表时间：{{gusses[2].publishDate}}</p> </li>
+								</ul>
+								</div>
+								
+<nav>
+  <ul class="pager">
+    <li class="previous"><a  class="label label-default" href="#"><button class=" glyphicon glyphicon-eye-open badge" >&nbsp;<a  style="color: red;"  href="/search/detail/{{gusses[2].docId}}">click here</a></button></a></li>
+    <li class="next"><a class="label label-default" href="#">
+    					<button id="bb" type="button" class="btn btn-link link" ><span  id="heart" class="glyphicon glyphicon-heart-empty " style="color: rgb(153,102,0); font: bolder;"><span>{{gusses[2].love}}</span></span>
+						</button> <input id="grouplike1" type="hidden" class="inputValue" value="{{gusses[2].docId}}" /></a></li>
+  </ul>
+</nav>
+							</div>
+					</td>
+					</tr>
+						</tbody>
+				</table>
+				
+					</li> -->
+					
+				</ul>
+			
+			</div>
+		</div>
+					</div>
+				
+				
+
+	
+
+	<!-- 热搜 -->
+	
+	<div class="well well-sm"> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-4" title="搜索热点">
+					</br> <label class="help-block" for="inputWarning2">搜索热点</label>
+				</div>
+
+				<div class="col-md-8">
+						  
+					<nav>
+						<ul class="pagination">
+							<li><a id="previous" href="#" aria-label="Previous"> <span
+									aria-hidden="true">&laquo;</span>
+							</a></li>
+							<li><a id="hot1" class="hotsearch" href="#"><span class="badge">1</span></a></li>
+							<li><a id="hot2" class="hotsearch" href="#"><span class="badge">2</span></a></li>
+							<li><a id="hot3" class="hotsearch" href="#"><span class="badge">3</span></a></li>
+							<li><a id="hot4" class="hotsearch" href="#"><span class="badge">4</span></a></li>
+							<li><a id="hot5" class="hotsearch" href="#"><span class="badge">5</span></a></li>
+							
+							<li><a id="next" href="#" aria-label="Next"> <span
+									aria-hidden="true">&raquo;</span>
+							</a></li>
+						</ul>
+					</nav>
+					
+				</div>
+
+
+
+			<div class="col-md-12" id="sidePaihang">
+				<table class="table table-condensed">
+					<thead>
+						<tr>
+							<th>排名</th>
+							<th class="opr-toplist-right">搜索指数</th>
+						</tr>
+					</thead>
+
+					<tbody id="hotbody">
+						
+					</tbody>
+
+				</table>
+				<div>
+				  <div class="c-gap-top-small opr-toplist-info">
+                <span>来源：</span><a target="_blank" href="#"  style="color:rgb(85,85,85);font-size: 16px;font-family: 'Comic Sans MS';  " ><strong>最强JAVAEE知识点搜索</strong></a><span>&nbsp;-&nbsp;</span><a target="_blank" href="#"  style="color:rgb(85,85,85);font-size: 16px;font-family: 'Comic Sans MS'";><strong>实时知识点排名</strong></a></div>
+        </div>
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	
+	
+	<!-- 右半边猜你会搜区域展示 end -->
+
+		<!-- Modal -->
+					<div id="somedialog" class="dialog">
+					<div class="dialog__overlay"></div>
+					<div class="dialog__content">
+						<div class="morph-shape" data-morph-open="M199.5,100c0,54.955-44.768,99.5-100,99.5s-100-44.545-100-99.5c0-54.956,44.769-99.5,100-99.5
+	S199.5,45.044,199.5,100z">
+							<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+								<path d="M199.5,100C199.5,154.95499999999998,154.732,199.5,99.5,199.5C44.268,199.5,-0.5,154.95499999999998,-0.5,100C-0.5,45.044,44.269,0.5,99.5,0.5C154.731,0.5,199.5,45.044,199.5,100C199.5,100,199.5,100,199.5,100"></path>
+							<desc></desc><defs></defs></svg>
+						</div>
+						<div class="dialog-inner">
+						<span style="color: rgb(216,84,80);font-size: 12px;font-family: 'Consolas'; font-style: italic;">
+							<h2><strong>Thank you for your praise</strong>,Your comments will add to the focus of this knowledge,and others may guess what you want to see in the search。</h2><div><button class="action btn btn-danger" data-dialog-close="">Close</button></div>
+						</span>
+						</div>
+					</div>
+				</div>
+	
+	<script type="text/javascript">
+		jQuery(".picMarquee-top").slide({mainCell:".bd ul[class='picList']",autoPlay:true,effect:"topMarquee",vis:3,interTime:50});
+		</script>
+		
+		
+		<script src="js/classie.js"></script>
+		<script src="js/dialogFx.js"></script>
+		<script>
+			(function() {
+
+				var dlgtrigger = document.querySelector( '[data-dialog]' ),
+
+					somedialog = document.getElementById( dlgtrigger.getAttribute( 'data-dialog' ) ),
+					// svg..
+					morphEl = somedialog.querySelector( '.morph-shape' ),
+					s = Snap( morphEl.querySelector( 'svg' ) ),
+					path = s.select( 'path' ),
+					initialPath = path.attr('d'),
+					steps = { 
+						open : morphEl.getAttribute( 'data-morph-open' )
+					},
+					dlg = new DialogFx( somedialog, {
+						onOpenDialog : function( instance ) {
+							// reset path
+							morphEl.querySelector( 'svg > path' ).setAttribute( 'd', initialPath );
+							// animate path
+							path.stop().animate( { 'path' : steps.open }, 300, mina.easein );
+						}
+					} );
+
+				dlgtrigger.addEventListener( 'click', dlg.toggle.bind(dlg) );
+
+			})();
+		</script>
+		<script src="js/jquery-stars.js"></script>
+		<script src="js/jquery.main.js"></script>
+
+	<!-- 主体部分 -->
+</body>
+</html>

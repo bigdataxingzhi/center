@@ -1,0 +1,86 @@
+body {
+   text-align: justify;
+   margin-right: 2em;
+   margin-left: 2em;
+}
+
+a,
+a[accesskey^="h"],
+a[accesskey^="n"],
+a[accesskey^="u"],
+a[accesskey^="p"] {
+    font-family: Verdana, Arial, helvetica, sans-serif;
+    font-size: 12px;
+	color: #003399;
+}
+
+a:active {
+    color: #003399;
+}
+
+a:visited {
+    color: #888888;
+}
+
+p {
+	font-family: Verdana, Arial, sans-serif;
+}
+
+dt {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+}
+
+p, dl, dt, dd, blockquote {
+    color: #000000;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    padding-top: 0;
+}
+
+ol, ul, p {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+p, blockquote {
+    font-size: 90%;
+}
+
+p.releaseinfo {
+    font-size: 100%;
+    font-weight: bold;
+    font-family: Verdana, Arial, helvetica, sans-serif;
+    padding-top: 10px;
+}
+
+p.pubdate {
+    font-size: 120%;
+    font-weight: bold; 
+    font-family: Verdana, Arial, helvetica, sans-serif;
+}
+
+
+blockquote {
+    margin-right: 0;
+}
+
+h1, h2, h3, h4, h6 {
+    color: #000000;
+    font-weight: 500;
+    margin-top: 0;
+    padding-top: 14px;
+    font-family: Verdana, Arial, helvetica, sans-serif;
+    margin-bottom: 0;
+}
+
+h2.title {
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+h2.subtitle {
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>js base64编码格式图片另存为下载-风来了.fox</title>
+</head>
+
+
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAYAAACJm/9dAAAFkElEQVR4Xu3bwW0dWRBDUSsD5Z+cUlAGMjy7gb0gCm9FngG8GKCqAV7+2+pNffz8/Pz88h8CCPyPwAcx/CIQ+JsAMfwqEPgHAWL4WSBADL8BBDIC/mJknEyNESDGWOHiZgSIkXEyNUbg4+vr6+fz8/PXn3/f39///fP/eKz/HvzFGHsTipsRIEbGydQYAWKMFS5uRoAYGSdTYwSIMVa4uBkBYmScTI0RIMZY4eJmBIiRcTI1RoAYY4WLmxEgRsbJ1BgBYowVLm5GgBgZJ1NjBIgxVri4GQFiZJxMjREgxljh4mYEiJFxMjVGgBhjhYubEXDB52LRxeY/Llj9xcheIKbGCBBjrHBxMwLEyDiZGiNAjLHCxc0IECPjZGqMADHGChc3I0CMjJOpMQLEGCtc3IwAMTJOpsYIEGOscHEzAsTIOJkaI0CMscLFzQgQI+NkaowAMcYKFzcjQIyMk6kxAsQYK1zcjAAxMk6mxgi44HPB54LPBd/Ya0/cMwGfUmd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UyAGGd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UyAGGd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UyAGGd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UzABZ8LPhd8LvjOLxCLYwR8So0VLm5GgBgZJ1NjBIgxVri4GQFiZJxMjREgxljh4mYEiJFxMjVGgBhjhYubESBGxsnUGAFijBUubkaAGBknU2MEiDFWuLgZAWJknEyNESDGWOHiZgSIkXEyNUaAGGOFi5sRIEbGydQYARd8Lvhc8LngG3vtiXsm4FPqjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCRDjjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCRDjjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCRDjjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCbjgc8Hngs8F3/kFYnGMgE+pscLFzQgQI+NkaowAMcYKFzcjQIyMk6kxAsQYK1zcjAAxMk6mxggQY6xwcTMCxMg4mRojQIyxwsXNCBAj42RqjAAxxgoXNyNAjIyTqTECxBgrXNyMADEyTqbGCBBjrHBxMwLEyDiZGiPggs8Fnws+F3xjrz1xzwR8Sp3RWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBYpzRWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBYpzRWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBYpzRWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBF3wu+FzwueA7v0AsjhHwKTVWuLgZAWJknEyNESDGWOHiZgSIkXEyNUaAGGOFi5sRIEbGydQYAWKMFS5uRoAYGSdTYwSIMVa4uBkBYmScTI0RIMZY4eJmBIiRcTI1RoAYY4WLmxEgRsbJ1BgBYowVLm5GgBgZJ1NjBFzwueBzweeCb+y1J+6ZgE+pMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSctjptddrqtLX5HSfbSwI+pV7S9KwaAsSoqVKQlwSI8ZKmZ9UQIEZNlYK8JECMlzQ9q4YAMWqqFOQlAWK8pOlZNQSIUVOlIC8JEOMlTc+qIUCMmioFeUmAGC9pelYNAWLUVCnISwLEeEnTs2oIEKOmSkFeEiDGS5qeVUOAGDVVCvKSgAs+F3wu+FzwvXyneFYzAZ9Sze3KdiZAjDM6i80EiNHcrmxnAsQ4o7PYTIAYze3KdiZAjDM6i80EiNHcrmxnAr8BUNe2gB+KW3wAAAAASUVORK5CYII=" align="absmiddle" style="width:128px;margin-top:4px;border-radius:128px;box-shadow:0px 0px 12px #7E7E7E;">
+
+
+
+<body>
+<a id="tttt"></a>
+<h2>图片</h2>
+<p><img id="ringoImage" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAYAAACJm/9dAAAFkElEQVR4Xu3bwW0dWRBDUSsD5Z+cUlAGMjy7gb0gCm9FngG8GKCqAV7+2+pNffz8/Pz88h8CCPyPwAcx/CIQ+JsAMfwqEPgHAWL4WSBADL8BBDIC/mJknEyNESDGWOHiZgSIkXEyNUbg4+vr6+fz8/PXn3/f39///fP/eKz/HvzFGHsTipsRIEbGydQYAWKMFS5uRoAYGSdTYwSIMVa4uBkBYmScTI0RIMZY4eJmBIiRcTI1RoAYY4WLmxEgRsbJ1BgBYowVLm5GgBgZJ1NjBIgxVri4GQFiZJxMjREgxljh4mYEiJFxMjVGgBhjhYubEXDB52LRxeY/Llj9xcheIKbGCBBjrHBxMwLEyDiZGiNAjLHCxc0IECPjZGqMADHGChc3I0CMjJOpMQLEGCtc3IwAMTJOpsYIEGOscHEzAsTIOJkaI0CMscLFzQgQI+NkaowAMcYKFzcjQIyMk6kxAsQYK1zcjAAxMk6mxgi44HPB54LPBd/Ya0/cMwGfUmd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UyAGGd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UyAGGd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UyAGGd0FpsJEKO5XdnOBIhxRmexmQAxmtuV7UzABZ8LPhd8LvjOLxCLYwR8So0VLm5GgBgZJ1NjBIgxVri4GQFiZJxMjREgxljh4mYEiJFxMjVGgBhjhYubESBGxsnUGAFijBUubkaAGBknU2MEiDFWuLgZAWJknEyNESDGWOHiZgSIkXEyNUaAGGOFi5sRIEbGydQYARd8Lvhc8LngG3vtiXsm4FPqjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCRDjjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCRDjjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCRDjjM5iMwFiNLcr25kAMc7oLDYTIEZzu7KdCbjgc8Hngs8F3/kFYnGMgE+pscLFzQgQI+NkaowAMcYKFzcjQIyMk6kxAsQYK1zcjAAxMk6mxggQY6xwcTMCxMg4mRojQIyxwsXNCBAj42RqjAAxxgoXNyNAjIyTqTECxBgrXNyMADEyTqbGCBBjrHBxMwLEyDiZGiPggs8Fnws+F3xjrz1xzwR8Sp3RWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBYpzRWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBYpzRWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBYpzRWWwmQIzmdmU7EyDGGZ3FZgLEaG5XtjMBF3wu+FzwueA7v0AsjhHwKTVWuLgZAWJknEyNESDGWOHiZgSIkXEyNUaAGGOFi5sRIEbGydQYAWKMFS5uRoAYGSdTYwSIMVa4uBkBYmScTI0RIMZY4eJmBIiRcTI1RoAYY4WLmxEgRsbJ1BgBYowVLm5GgBgZJ1NjBFzwueBzweeCb+y1J+6ZgE+pMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSI0dyubGcCxDijs9hMgBjN7cp2JkCMMzqLzQSctjptddrqtLX5HSfbSwI+pV7S9KwaAsSoqVKQlwSI8ZKmZ9UQIEZNlYK8JECMlzQ9q4YAMWqqFOQlAWK8pOlZNQSIUVOlIC8JEOMlTc+qIUCMmioFeUmAGC9pelYNAWLUVCnISwLEeEnTs2oIEKOmSkFeEiDGS5qeVUOAGDVVCvKSgAs+F3wu+FzwvXyneFYzAZ9Sze3KdiZAjDM6i80EiNHcrmxnAsQ4o7PYTIAYze3KdiZAjDM6i80EiNHcrmxnAr8BUNe2gB+KW3wAAAAASUVORK5CYII=" align="absmiddle" style="width:128px;margin-top:4px;border-radius:128px;box-shadow:0px 0px 12px #7E7E7E;"/></p>
+<div><a onclick="down()" href="javascript:void(0);">下载图片</div>
+<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script> 
+<script>
+/**
+ * 根据图片生成画布
+ */
+function convertImageToCanvas(image) {
+    var canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    canvas.getContext("2d").drawImage(image, 0, 0);
+    return canvas;
+}
+/**
+ * 下载图片
+ */
+function down() {
+    var sampleImage = document.getElementById("ringoImage"),
+    canvas = convertImageToCanvas(sampleImage);
+    url = canvas.toDataURL("image/png");//PNG格式
+    //以下代码为下载此图片功能
+    var triggerDownload = $("#tttt").attr("href", url).attr("download", "order-1111111111.png");
+    triggerDownload[0].click();
+//    triggerDownload.remove();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>知识点内容添加</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="/manager/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/manager/css/style.css">
+	<link rel="stylesheet" href="/manager/css/daterangepicker.css" />
+     <script src="/manager/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="/manager/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/manager/kindeditor-4.1.10/kindeditor-all-min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/manager/kindeditor-4.1.10/lang/zh_CN.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/manager/js/common.js"></script>
+ <script type="text/javascript" src="static/layer/layer.js"></script>
+</head>
+<body> 
+
+
+<div class="container-fluid">
+  <div class="row">
+  <div><br/><br/></div>
+  </div>
+  <div class="row">
+<form class="form-horizontal" id="commentForm">
+
+<!-- item -->
+  <div class="form-group has-warning has-feedback">
+    <label for="inputEmail3" class="col-sm-2 control-label">父类别</label>
+    <div class="col-sm-8">
+    <input id="item" type="text" class="form-control"  aria-describedby="inputSuccess2Status" name="item">
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+  <span id="inputWarning2Status" class="sr-only">(warning)</span>
+
+    </div>
+  </div>
+  
+  
+  <!-- title -->
+  <div class="form-group has-warning has-feedback">
+    <label for="inputEmail3" class="col-sm-2 control-label">标题</label>
+    <div class="col-sm-8">
+   <input id="title" type="text" class="form-control"  aria-describedby="inputSuccess2Status" name="title">
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+  <span id="inputWarning2Status" class="sr-only">(warning)</span>
+
+    </div>
+  </div>
+  
+  <!-- subtitle -->
+  <div class="form-group has-warning has-feedback">
+    <label for="inputEmail3" class="col-sm-2 control-label">子标题</label>
+    <div class="col-sm-8">
+   <input id="subtitle" type="text" class="form-control"  aria-describedby="inputSuccess2Status" name="subtitle">
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+  <span id="inputWarning2Status" class="sr-only">(warning)</span>
+
+    </div>
+  </div>
+<!-- info -->
+  <div class="form-group has-warning has-feedback">
+    <label for="inputEmail3" class="col-sm-2 control-label">简介</label>
+    <div class="col-sm-8">
+      <textarea id="info" class="form-control"  style="height:300px;" aria-describedby="inputWarning2Status" name="info"></textarea> 
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+  <span id="inputWarning2Status" class="sr-only">(warning)</span>
+
+    </div>
+  </div>
+  
+  <!--gainian  -->
+<div class="form-group has-warning has-feedback">
+    <label for="inputEmail3" class="col-sm-2 control-label">概念</label>
+    <div class="col-sm-8">
+      <textarea id="gainian" style="height:300px;visibility:hidden;" class="form-control"  aria-describedby="inputWarning2Status" name="gainian"></textarea> 
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+  <span id="inputWarning2Status" class="sr-only">(warning)</span>
+
+    </div>
+  </div>
+  
+  <!--target -->
+<div class="form-group has-warning has-feedback">
+    <label for="inputEmail3" class="col-sm-2 control-label">功能和目标</label>
+    <div class="col-sm-8">
+      <textarea id="target" class="form-control" style="height:600px;visibility:hidden;" aria-describedby="inputWarning2Status" name="target"></textarea> 
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ></span>
+  <span id="inputWarning2Status" class="sr-only">(warning)</span>
+
+    </div>
+  </div>
+  
+  <!-- use -->
+<div class="form-group has-warning has-feedback">
+    <label for="inputEmail3" class="col-sm-2 control-label">使用</label>
+    <div class="col-sm-8">
+      <textarea id="use" class="form-control" style="height:800px;visibility:hidden;" aria-describedby="inputWarning2Status"  name="use"></textarea> 
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+  <span id="inputWarning2Status" class="sr-only">(warning)</span>
+
+    </div>
+  </div>
+</form>
+</div>
+<div class="row">
+<div class="col-md-5"></div>
+<div class="col-md-5" style="padding:5px;">
+	    <a style="margin:15px;" href="javascript:void(0)" class="btn btn-primary btn-lg active" role="button" onclick="contentAddPage.submitForm()">提交</a>
+	    
+	    <a id="reset" style="margin:15px;" href="javascript:void(0)" class="btn btn-default btn-lg active" role="button" onclick="contentAddPage.clearForm()">重置</a>
+	</div>
+</div>
+</div>
+
+<script type="text/javascript">
+
+var canSubmit = false;
+var contentAddPage  = {
+		submitForm : function (){
+			$("input").each(function(i){
+				   if($(this).val()==""){
+					   canSubmit = false;
+				   }else{
+					   canSubmit = true;
+				   }
+			 });
+			
+			if(!canSubmit){
+				layer.msg("请完善字段！");
+				return ;
+			}
+			infoAddEditor.sync();
+			gainianAddEditor.sync();
+			targetAddEditor.sync(); 
+			useAddEditor.sync();
+			                
+			
+			//提交到后台的RESTful
+			$.ajax({
+			   type: "POST",
+			   url: "/manager/save",
+			   data: $("#commentForm").serialize(),
+			   success: function(msg){
+				    layer.msg("温馨提示：新增内容成功!");
+				  
+				   $("#reset").click();
+						
+			   },
+			   error: function(){
+				    layer.msg("温馨提示：新增内容失败!");
+
+			}
+		});
+		
+		
+},
+
+clearForm : function(){
+	$('#commentForm :input').val("");
+	$('#commentForm :input').next().addClass("glyphicon glyphicon-warning-sign");
+	$('#commentForm :input').parent().parent().addClass("has-warning");
+	infoAddEditor.html('');
+	gainianAddEditor.html('');
+	targetAddEditor.html('');
+	useAddEditor.html('');
+}
+
+};
+
+
+$(function(){
+	$('#myAlert').on('closed.bs.alert', function () {
+		$().alert("nnnn");
+		})
+	//页面初始化完毕后执行此方法
+	//创建富文本编辑器,将文本域以富文本编辑器的样式显示.
+	infoAddEditor = E3.createEditor("#commentForm [name=info]");
+	gainianAddEditor = E3.createEditor("#commentForm [name=gainian]");
+	targetAddEditor = E3.createEditor("#commentForm [name=target]");
+	useAddEditor = E3.createEditor("#commentForm [name=use]");
+
+	$("input").blur(function(){
+		var value = $(this).val();
+		if(value==""){
+			$(this).next().removeClass("glyphicon glyphicon-warning-sign");
+			$(this).parent().parent().removeClass("has-warning");
+			$(this).parent().parent().addClass("has-error");
+			$(this).next().addClass("glyphicon glyphicon-remove");
+			$(this).val("该字段不可为空！！");
+		}else{
+			$(this).next().removeClass("glyphicon glyphicon-warning-sign");
+			$(this).parent().parent().removeClass("has-warning");
+			$(this).next().removeClass("glyphicon glyphicon-remove");
+			$(this).parent().parent().removeClass("has-error");
+			$(this).parent().parent().addClass("has-success ");
+			$(this).next().addClass("glyphicon glyphicon-ok");
+		}
+	});
+	
+	$("input").focus(function(){
+		var value = $(this).val();
+		if(value=="该字段不可为空！！"){
+			var value = $(this).val("");
+		}
+	});
+	
+	
+	
+	
+
+	
+	});
+</script>
+</body>
+</html>

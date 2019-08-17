@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>知识点内容管理</title>
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="/manager/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/manager/plugins/adminLTE/css/AdminLTE.css">
+    <link rel="stylesheet" href="/manager/plugins/adminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/manager/css/style.css">
+	<link rel="stylesheet" href="/manager/css/daterangepicker.css" />
+     <script src="/manager/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="/manager/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/manager/js/moment.min.js"></script>
+	<script src="/manager/js/jquery.daterangepicker.js"></script>   
+	<script src="/manager/js/rangeDate.js"></script>
+	<script type="text/javascript" src="/manager/plugins/angularjs/angular.min.js"></script>
+	
+	<!-- 分页组件开始 -->
+	<script src="/manager/plugins/angularjs/pagination.js"></script>
+	<link rel="stylesheet" href="/manager/plugins/angularjs/pagination.css">
+	<!-- 分页组件结束 -->
+	<script type="text/javascript" charset="utf-8" src="/manager/kindeditor-4.1.10/kindeditor-all-min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/manager/kindeditor-4.1.10/lang/zh_CN.js"></script>
+	<script type="text/javascript" charset="utf-8" src="/manager/js/common.js"></script>
+	<script type="text/javascript">
+	$(function(){
+	//页面初始化完毕后执行此方法
+	//创建富文本编辑器,将文本域以富文本编辑器的样式显示.
+	itemAddEditor = E3.createEditor("#commentForm [name=conent]");
+
+
+	$('#editModal').on('shown.bs.modal', function () {
+		
+		//初始化富文本编辑器，并且将富文本编辑器中的数据进行回显
+		itemAddEditor.html(info);
+		
+		
+	});
+	});
+	</script>
+	
+	
+	<script type="text/javascript">
+		var info = "";
+		var app=angular.module('pinyougou',['pagination']);
+		app.controller('brandController',function($scope,$http){
+			
+			//查询品牌列表
+		/* 	$scope.findAll=function(){
+				$http.get('/manager/findAll.do').success(
+					function(response){
+						$scope.list=response;
+					}		
+				);				
+			} */
+			
+			
+			//分页控件配置currentPage:当前页   totalItems :总记录数  itemsPerPage:每页记录数  perPageOptions :分页选项  onChange:当页码变更后自动触发的方法 
+			$scope.paginationConf = {
+				currentPage: 1,
+				totalItems: 10,
+				itemsPerPage: 10,
+				perPageOptions: [10, 20, 30, 40, 50],
+				onChange: function(){
+					$scope.reloadList();
+				}
+			};
+			
+			//刷新列表
+			$scope.reloadList=function(){
+				$scope.search( $scope.paginationConf.currentPage ,  $scope.paginationConf.itemsPerPage );
+			}
+			
+			//分页 
+		/* 	$scope.findPage=function(page,size){
+				$http.get('/manager/findPage?page='+page +'&size='+size).success(
+					function(response){
+						$scope.list=response.rows;//显示当前页数据 	
+						$scope.paginationConf.totalItems=response.total;//更新总记录数 
+					}		
+				);				
+			} */
+			
+			//新增
+			$scope.save=function(){
+				itemAddEditor.sync();
+				var updateInfo = $("#commentForm [name=conent]").val();
+				$("#commentForm [name=conent]").next().val(updateInfo);
+				$scope.entity.info = updateInfo;
+				var methodName='add';//方法名 
+				if($scope.entity.docId!=null){
+					methodName='update';
+				}				
+				$http.post('/manager/'+methodName,$scope.entity).success(
+					function(response){
+						if(response.code==200){
+							$scope.reloadList();//刷新
+						}else{
+							alert(response.message);
+						}				
+					}		
+				);
+			}
+			
+		/* 	$scope.findByDateRange=function(){
+				if(dateRange!=""){
+					$http.get('/manager/findByDateRange?page='+$scope.paginationConf.currentPage +'&size='+$scope.paginationConf.itemsPerPage+"&dataRange="+dateRange).success(
+							function(response){
+								$scope.list=response.rows;//显示当前页数据 	
+								$scope.paginationConf.totalItems=response.total;//更新总记录数 
+							}		
+						);
+				}
+			} */
+			//查询实体
+		 	$scope.findOne=function(id){
+				$http.get('/manager/findOne?id='+id).success(
+					function(response){
+						$scope.entity=response;
+						info= $scope.entity.info;
+					}		
+				);				
+			} 
+			
+			$scope.selectIds=[];//用户勾选的ID集合 
+			//用户勾选复选框 
+			$scope.updateSelection=function($event,id){
+				if($event.target.checked){
+					$scope.selectIds.push(id);//push向集合添加元素 					
+				}else{
+					var index= $scope.selectIds.indexOf(id);//查找值的 位置
+					$scope.selectIds.splice(index,1);//参数1：移除的位置 参数2：移除的个数  
+				}
+			}
+			
+			//删除
+			$scope.dele=function(){
+				
+				
+				if(confirm('确定要删除吗？')){
+					$http.get('/manager/delete?ids='+$scope.selectIds).success(
+							function(response){
+								if(response.code==200){
+						
+									$scope.reloadList();//刷新
+								}else{
+									alert(response.message);
+								}						
+							}
+					);
+				}					
+				
+			}
+			
+			$scope.searchEntity={};
+			//条件查询 
+			$scope.search=function(page,size){
+				var dateRange = $("#date-range").val();
+				
+				var url = '/manager/findPage?page='+page +'&size='+size;
+				if(dateRange!=""){
+					alert(dateRange);
+					url =url+"&dataRange="+dateRange;
+				}
+				$http.post(url, $scope.searchEntity).success(
+					function(response){
+						
+						$scope.list=response.rows;//显示当前页数据 	
+						$scope.paginationConf.totalItems=response.total;//更新总记录数 
+			
+						
+					}		
+				);	
+				
+			}
+			
+			
+		});
+		
+	
+	</script>
+    
+</head>
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="brandController" >
+  <!-- .box-body -->
+                    <div class="box-header with-border">
+                        <h3 class="box-title">知识点查看</h3>
+                    </div>
+     				<div class="container-fluid">
+					 <div class="row">
+					 <div class="col-md-8">
+                    <div class="box-body">
+
+                        <!-- 数据表格 -->
+                        <div class="table-box">
+
+                            <!--工具栏-->
+                            <div class="pull-left">
+                                <div class="form-group form-inline">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default" title="新建" data-toggle="modal" data-target="#editModal" ng-click="entity={}" ><i class="fa fa-file-o"></i> 新建</button>
+                                        <button type="button" class="btn btn-default" title="删除" ng-click="dele()"><i class="fa fa-trash-o" ></i> 删除</button>           
+                                        <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
+                                    </div>
+                                </div>
+                            </div>
+                                  </div>
+                                  </div>
+                                  </div>
+                           
+			        <div class="col-md-4">
+			         <div class="box-tools pull-right">
+                                
+                        <div class="has-feedback range ">
+                        <div class="col-md-8">
+				    <div class="input-group">
+					  <span class="input-group-addon" id="sizing-addon2"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+					  <input type="text" class="form-control" id="date-range" placeholder="dateRange" aria-describedby="sizing-addon2">
+					</div>
+					</div>
+					</div>
+					<div class="col-md-2">
+					<button  class="btn btn-default" ng-click="reloadList()">查询</button>
+					</div>
+					</div>
+					</div>
+          				
+                            </div>
+                            </div>
+                            <!--工具栏/-->
+
+			                  <!--数据列表-->
+			                  <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
+			                     
+			                      <thead>
+			                          <tr>
+			                              <th class="" style="padding-right:0px">
+			                                  <input id="selall" type="checkbox" class="icheckbox_square-blue">
+			                              </th> 
+										  <th class="sorting_asc">点赞数</th>
+									      <th class="sorting">知识点标题</th>									      
+									      <th class="sorting">知识点子标题</th>									     				
+									      <th class="sorting">作者</th>
+									       <th class="sorting">发表时间</th>									     				
+									      									     				
+					                      <th class="text-center">操作</th>
+			                          </tr>
+			                      </thead>
+
+			                      <tbody>
+			                          <tr ng-repeat="entity in list">
+			                              <td><input  type="checkbox" ng-click="updateSelection($event, entity.docId)" ></td>	
+			                              <td>{{entity.love}}</td> 		                              
+				                          <td>{{entity.title}}</td> 
+				                          <td>{{entity.subtitle}}</td>
+									      <td>{{entity.author}}</td>									     
+		                                  <td>{{entity.publishDate}}</td>		                                 
+		                                  <td class="text-center">                                           
+		                                 	  <button type="button" class="btn bg-olive btn-xs" data-toggle="modal" data-target="#editModal" ng-click="findOne(entity.docId)" >修改</button>                                           
+		                                  </td>
+			                          </tr>
+									  
+			                      </tbody>
+			                  </table>
+			                  <!--数据列表/-->                        
+							  <tm-pagination conf="paginationConf"></tm-pagination>
+							
+                        </div>
+                        <!-- 数据表格 /-->
+                        
+                        
+                        
+                        
+                     </div>
+                    <!-- /.box-body -->
+         
+<!-- 编辑窗口 -->
+<div class="modal fade bs-example-modal-lg"  role="dialog" id="editModal" tabindex="-1"  aria-labelledby="myModalLabel" aria-hidden="true" >
+ <div class="container"></div>
+  <div class="modal-dialog modal-lg" >
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel">知识点编辑</h3>
+		</div>
+		<div class="modal-body">		
+			<table  id="commentForm" class="table table-bordered table-striped" >
+			<tr><td><input type="hidden" ng-model="entity.docId"/></td></tr>
+		      	<tr>
+		      		<td>知识点作者</td>
+		      		<td><input  class="form-control" placeholder="知识点作者" ng-model="entity.author">  </td>
+		      	</tr>	
+		      	<tr>
+		      		<td>知识点标题</td>
+		      		<td><input  class="form-control" placeholder="知识点标题" ng-model="entity.title">  </td>
+		      	</tr>	      	
+		      	<tr>
+		      		<td>知识点子标题</td>
+		      		<td><input  class="form-control" placeholder="知识点子标题" ng-model="entity.subtitle">  </td>
+		      	<tr>
+	            <td>知识点简介:</td>
+	            <td>
+	                <textarea class="form-control" placeholder="知识点简介" style="width:800px;height:300px;visibility:hidden;" name="conent"></textarea>
+	                <input type="hidden" ng-model="entity.info"></input>
+	            </td>
+	        </tr>
+		   
+		 	      	
+			 </table>				
+		</div>
+		<div class="modal-footer">						
+			<button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="save()">保存</button>
+			<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
+		</div>
+	  </div>
+	</div>
+</div>
+   
+</body>
+</html>

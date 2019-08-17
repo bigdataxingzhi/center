@@ -1,0 +1,97 @@
+<!DOCTYPE html >
+<html >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+<title>登录</title>
+<link href="/boot/bootstrap-3.3.7-dist/css/bootstrap.min.css" title="" rel="stylesheet" />
+
+<link title="orange" href="/css/login/login.css" rel="stylesheet" type="text/css"/>
+    
+    <title>Login</title>
+    <link href="/css/login/jquery-ui-1.8.16.custom.css" rel="stylesheet">
+    <script src="/js/jquery-1.6.2.min.js"></script>
+    <script src="/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.keyboard.extension-typing.js"></script>
+    <link type="text/css" href="keyboard.css" rel="/css/login/stylesheet" />
+    <script type="text/javascript" src="/js/jquery.keyboard.js"></script>
+
+</head>
+
+<body>
+  
+  <div style="height:1px;"></div>
+  <div class="login">
+     
+	 <div class="sr">
+	    <form action="/login" method="post">
+		    <div class="name">
+				<label>
+				<i class="sublist-icon glyphicon glyphicon-user"></i>
+				</label>
+                    <input class="name_inp logininput ui-keyboard-input ui-widget-content ui-corner-all" name="username"
+                        id="user_name" type="text" value="" placeholder="这里输入登录名"/>
+		
+			</div>
+			 <div class="name">
+<label>
+				<i class="sublist-icon glyphicon glyphicon-pencil"></i>
+				</label>
+<span>
+                       <input name="password" class="name_inp logininput ui-keyboard-input ui-widget-content ui-corner-all" id="user_password" role="textbox" aria-haspopup="true" type="password" placeholder="这里输入登录密码">
+<img title="Click to open the virtual keyboard"  id="passwd" alt="Click to open the virtual keyboard" src="/css/login/keyboard.png" style="float:right;" >
+  
+</span>				
+			
+			</div>
+			<input name="remember-me" type="checkbox" value="true"/>
+			<label style="color: red;">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;记住我
+				</label>
+				<br/><br/>
+			<button class="dl">登录</button>
+		</form>
+	 </div>
+  </div>
+
+<script type="text/javascript">
+        $(document).ready(function() {
+            $('#user_password').keyboard({
+                openOn: null,
+                stayOpen: true,
+                layout: 'qwerty'
+            }).addTyping();
+            $('#passwd').click(function() {
+                $('#user_password').getkeyboard().reveal();
+            })
+
+            $(".logininput").blur(function() {
+                if ($(this).val() == "") {
+                    $(this).css("border-color", "red");
+                                    }
+                else
+                    $(this).css("border-color", "#D9D6C4");
+            })
+
+            $("#loginbtn").click(function() {
+                var k = 0;
+                var ajaxhtml = "";
+                $(".logininput").each(function(i, obj) {
+                    if ($(obj).val().trim() == "") {
+                        k++;
+                        $(this).css("border-color", "red");
+                        $(this).focus();
+                        return false;
+                    }
+                });
+                if (k != 0) return;
+                ajaxhtml = $("#loginbtn").html();
+                $("#loginbtn").html("Loading....  <img src='/css/login/loading.gif' alt='Announcement' /> ");
+                $("#loginbtn").attr("disabled", "disabled");
+
+            })
+        });
+        
+    </script>
+</body>
+</html>

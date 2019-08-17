@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="text/javascript"  th:src="@{/static/boot/js/jquery-1.12.4.min.js}" src="/static/boot/js/jquery-1.12.4.min.js"></script>
+<link href="/static/boot/css/main2.css" th:href="@{/static/boot/css/main2.css}"
+	rel="stylesheet">
+<link href="/static/boot/bootstrap-3.3.7-dist/css/bootstrap.min.css" th:href="@{/static/boot/bootstrap-3.3.7-dist/css/bootstrap.min.css}"
+	rel="stylesheet">
+<link rel="stylesheet" href="/static/boot/css/owl.carousel.css" th:href="@{/static/boot/css/owl.carousel.css}"
+	type="text/css">
+<link rel="stylesheet" href="/static/boot/css/style.css"  th:href="@{/static/boot/css/style.css}" type="text/css">
+<link rel="stylesheet" href="/static/boot/css/owl.transitions.css" th:href="@{/static/boot/css/owl.transitions.css}"
+	type="text/css">
+<script th:src="@{/static/boot/bootstrap-3.3.7-dist/js/bootstrap.min.js}" src="/static/boot/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+
+	<div class="container-fluid">
+	<!-- first start -->
+	 <div class="row">
+	 <div class="col-md-4"></div>
+	 <div class="col-md-4">  
+	 <h2 class="title"><a name="title"></a><span id="title" th:if="${knowledge!=null}" th:utext="${knowledge.title}" >使用Spring进行面向切面编程（AOP）</span></h2>
+	 <p class="text-right lead">
+	 <strong>
+		作者：<span th:if="${knowledge!=null}" th:utext="${knowledge.author}"></span>
+	</strong>
+	 </p>
+		</div>
+		<div class="col-md-4"></div>
+		</div>
+		<!-- first end -->
+		
+		<!-- second first -->
+		 <div class="row">
+	    <div class="col-md-12">
+		<blockquote>
+		<h2 class="title" style="clear: both"><a name="introduction"></a><span >1.&nbsp;简介</span></h2>
+		<p>
+		<pre style="background: rgb(243,245,232);" th:if="${knowledge!=null}" th:utext="${knowledge.info}">
+		<em>面向切面编程</em>（AOP）通过提供另外一种思考程序结构的途经来弥补面向对象编程（OOP）的不足。在OOP中模块化的关键单元是类（classes），而在AOP中模块化的单元则是<span class="emphasis"><em>切面</em></span>。切面能对关注点进行模块化，例如横切多个类型和对象的事务管理。（在AOP术语中通常称作<span class="emphasis"><em>横切（crosscutting）</em></span>关注点。）
+		</pre>
+		</p>
+		</blockquote>
+</div>
+</div>
+
+<!-- first end -->
+
+<!-- second start -->
+<div class="row">
+<div class="col-md-12">
+
+<blockquote>
+<h3 class="title"><a name="defn"></a><span><strong>1.1.&nbsp;概念</strong></span></h3>
+<div class="itemizedlist">
+<pre style="background: rgb(243,245,232);" th:if="${knowledge!=null}" th:utext="${knowledge.gainian}">
+<ol type="disc">
+
+					<li>
+          <span class="defn"><em>切面（Aspect）</em></span>：一个关注点的模块化，这个关注点可能会横切多个对象。事务管理是J2EE应用中一个关于横切关注点的很好的例子。在Spring AOP中，切面可以使用<a href="aop.html#aop-schema" title="6.3.&nbsp;基于Schema的AOP支持">基于模式</a>）或者基于<a href="aop.html#aop-ataspectj" title="6.2.&nbsp;@AspectJ支持">@Aspect注解</a>的方式来实现。
+				  </li><li><p><span class="emphasis"><em>连接点（Joinpoint）</em></span>：在程序执行过程中某个特定的点，比如某方法调用的时候或者处理异常的时候。在Spring AOP中，一个连接点<span class="emphasis"><em>总是</em></span>表示一个方法的执行。</p></li><li><p><span class="emphasis"><em>通知（Advice）</em></span>：在切面的某个特定的连接点上执行的动作。其中包括了“around”、“before”和“after”等不同类型的通知（通知的类型将在后面部分进行讨论）。许多AOP框架（包括Spring）都是以<span class="emphasis"><em>拦截器</em></span>做通知模型，并维护一个以连接点为中心的拦截器链。
+					</p></li><li><p><span class="emphasis"><em>切入点（Pointcut）</em></span>：匹配连接点的断言。通知和一个切入点表达式关联，并在满足这个切入点的连接点上运行（例如，当执行某个特定名称的方法时）。切入点表达式如何和连接点匹配是AOP的核心：Spring缺省使用AspectJ切入点语法。
+					</p></li><li><p><span class="emphasis"><em>引入（Introduction）</em></span>：用来给一个类型声明额外的方法或属性（也被称为连接类型声明（inter-type declaration））。Spring允许引入新的接口（以及一个对应的实现）到任何被代理的对象。例如，你可以使用引入来使一个bean实现<tt class="literal">IsModified</tt>接口，以便简化缓存机制。
+					</p></li><li><p><span class="emphasis"><em>目标对象（Target Object）</em></span>：
+					被一个或者多个切面所通知的对象。也被称做<span class="emphasis"><em>被通知（advised）</em></span>对象。
+					既然Spring AOP是通过运行时代理实现的，这个对象永远是一个<span class="emphasis"><em>被代理（proxied）</em></span>对象。
+					</p></li><li><p><span class="emphasis"><em>AOP代理（AOP Proxy）</em></span>：AOP框架创建的对象，用来实现切面契约（例如通知方法执行等等）。在Spring中，AOP代理可以是JDK动态代理或者CGLIB代理。
+					</p></li><li><p><span class="emphasis"><em>织入（Weaving）</em></span>：把切面连接到其它的应用程序类型或者对象上，并创建一个被通知的对象。这些可以在编译时（例如使用AspectJ编译器），类加载时和运行时完成。Spring和其他纯Java AOP框架一样，在运行时完成织入。
+					</p></li>
+					
+					</ol>
+					</pre>
+					</div>
+</blockquote>
+</div>
+</div>
+<!-- second end -->
+
+<!-- three start -->
+<div class="row">
+<div class="col-md-12">
+<blockquote>
+<h3 class="title"><a name="target"></a><span><strong>1.2.&nbsp;功能和目标</strong></span></h3>
+<div id="target" class="itemizedlist">
+<pre style="background: rgb(243,245,232);" th:if="${knowledge!=null}" th:utext="${knowledge.target}">
+	<span style="color:#E56600;">
+	
+	<p style="font-family:&quot;font-size:medium;"  >
+		在此处输入内容
+	</p>
+	<ol style="font-family:&quot;font-size:medium;">
+		<li>
+			描述1
+		</li>
+		<li>
+			描述2
+		</li>
+		<li>
+			描述3
+		</li>
+	</ol>
+	<p style="font-family:&quot;font-size:medium;">
+		在此处输入内容
+	</p>
+	<ul style="font-family:&quot;font-size:medium;">
+		<li>
+			描述1
+		</li>
+		<li>
+			描述2
+		</li>
+		<li>
+			描述3
+		</li>
+	</ul>
+<br />
+</span>
+
+</pre>
+</div>
+</blockquote>
+</div>
+</div>
+
+<!-- three end -->
+
+
+<!-- four start -->
+<div class="row">
+<div class="col-md-12">
+<blockquote>
+<h2 class="title" style="clear: both"><a name="introduction"></a><span><strong>2.&nbsp;使用案例</strong></span></h2>
+<div>
+<pre style="background: rgb(245,245,245);">
+<div id="example" style="font-size: 18px; font-family: 'Consolas'; font-weight:bold; color: rgb(128,128,0);" th:if="${knowledge!=null}" th:utext="${knowledge.use}">
+
+import org.aspectj.lang.annotation.Aspect;<br />
+import org.aspectj.lang.annotation.Pointcut;<br />
+<br />
+@Aspect<br />
+public class SystemArchitecture {<br />
+<br />
+&nbsp; &lt;i class="lineannotation"&gt;&lt;span class="lineannotation"&gt;/**<br />
+&nbsp; &nbsp;* A join point is in the web layer if the method is defined<br />
+&nbsp; &nbsp;* in a type in the com.xyz.someapp.web package or any sub-package<br />
+&nbsp; &nbsp;* under that.<br />
+&nbsp; &nbsp;*/&lt;/span&gt;&lt;/i&gt;<br />
+&nbsp; @Pointcut（"within（com.xyz.someapp.web..*）"）<br />
+&nbsp; public void inWebLayer（） {}<br />
+<br />
+&nbsp; &lt;i class="lineannotation"&gt;&lt;span class="lineannotation"&gt;/**<br />
+&nbsp; &nbsp;* A join point is in the service layer if the method is defined<br />
+&nbsp; &nbsp;* in a type in the &lt;tt class="literal"&gt;com.xyz.someapp.service&lt;/tt&gt; package or any sub-package<br />
+&nbsp; &nbsp;* under that.<br />
+&nbsp; &nbsp;*/&lt;/span&gt;&lt;/i&gt;<br />
+&nbsp; @Pointcut（"within（com.xyz.someapp.service..*）"）<br />
+&nbsp; public void inServiceLayer（） {}<br />
+<br />
+&nbsp; &lt;i class="lineannotation"&gt;&lt;span class="lineannotation"&gt;/**<br />
+&nbsp; &nbsp;* A join point is in the data access layer if the method is defined<br />
+&nbsp; &nbsp;* in a type in the &lt;tt class="literal"&gt;com.xyz.someapp.dao&lt;/tt&gt; package or any sub-package<br />
+&nbsp; &nbsp;* under that.<br />
+&nbsp; &nbsp;*/&lt;/span&gt;&lt;/i&gt;<br />
+&nbsp; @Pointcut（"within（com.xyz.someapp.dao..*）"）<br />
+&nbsp; public void inDataAccessLayer（） {}<br />
+<br />
+&nbsp; &lt;i class="lineannotation"&gt;&lt;span class="lineannotation"&gt;/**<br />
+&nbsp; &nbsp;* A business service is the execution of any method defined on a service<br />
+&nbsp; &nbsp;* interface. This definition assumes that interfaces are placed in the<br />
+&nbsp; &nbsp;* "service" package, and that implementation types are in sub-packages.<br />
+&nbsp; &nbsp;*&nbsp;<br />
+&nbsp; &nbsp;* If you group service interfaces by functional area （for example,&nbsp;<br />
+&nbsp; &nbsp;* in packages &lt;tt class="literal"&gt;com.xyz.someapp.abc.service&lt;/tt&gt; and &lt;tt class="literal"&gt;com.xyz.def.service&lt;/tt&gt;） then<br />
+&nbsp; &nbsp;* the pointcut expression "&lt;tt class="literal"&gt;execution（* com.xyz.someapp..service.*.*（..））&lt;/tt&gt;"<br />
+&nbsp; &nbsp;* could be used instead.<br />
+&nbsp; &nbsp;*<br />
+&nbsp; &nbsp;* Alternatively, you can write the expression using the '&lt;tt class="literal"&gt;bean&lt;/tt&gt;'<br />
+&nbsp; &nbsp;* PCD, like so "&lt;tt class="literal"&gt;bean（*Service）&lt;/tt&gt;". （This assumes that you have<br />
+&nbsp; &nbsp;* named your Spring service beans in a consistent fashion.）<br />
+&nbsp; &nbsp;*/&lt;/span&gt;&lt;/i&gt;<br />
+&nbsp; @Pointcut（"execution（* com.xyz.someapp.service.*.*（..））"）<br />
+&nbsp; public void businessService（） {}<br />
+&nbsp;&nbsp;<br />
+&nbsp; &lt;i class="lineannotation"&gt;&lt;span class="lineannotation"&gt;/**<br />
+&nbsp; &nbsp;* A data access operation is the execution of any method defined on a&nbsp;<br />
+&nbsp; &nbsp;* dao interface. This definition assumes that interfaces are placed in the<br />
+&nbsp; &nbsp;* "&lt;tt class="literal"&gt;dao&lt;/tt&gt;" package, and that implementation types are in sub-packages.<br />
+&nbsp; &nbsp;*/&lt;/span&gt;&lt;/i&gt;<br />
+&nbsp; @Pointcut（"execution（* com.xyz.someapp.dao.*.*（..））"）<br />
+&nbsp; public void dataAccessOperation（） {}<br />
+<br />
+<p>
+	}
+</p>
+<p>
+	<br />
+</p>
+<p>
+	&lt;aop:config&gt;<br />
+&nbsp; &lt;aop:advisor&nbsp;<br />
+&nbsp; &nbsp; &nbsp; pointcut="com.xyz.someapp.SystemArchitecture.businessService（）"<br />
+&nbsp; &nbsp; &nbsp; advice-ref="tx-advice"/&gt;<br />
+&lt;/aop:config&gt;<br />
+<br />
+&lt;tx:advice id="tx-advice"&gt;<br />
+&nbsp; &lt;tx:attributes&gt;<br />
+&nbsp; &nbsp; &lt;tx:method name="*" propagation="REQUIRED"/&gt;<br />
+&nbsp; &lt;/tx:attributes&gt;<br />
+&lt;/tx:advice&gt;<br />
+</p>
+<p>
+	<br />
+</p>
+
+
+
+
+<!--  -->
+</div>
+</pre>
+</div>
+</blockquote>
+</div>
+</div>
+
+<!-- four end -->
+
+
+</div>
+
+</body>
+
+</html>

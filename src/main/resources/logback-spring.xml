@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+<configuration>
+
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                <pattern>%d{yyyy‐MM‐dd HH: mm: ss. SSS} ‐‐‐‐> [ %thread] ‐‐‐> %logger{50} ‐ %msg%n</pattern>
+            </pattern>
+        </layout>
+    </appender>
+
+
+    <root level="DEBUG">
+        <appender-ref ref="consoleLog" />
+    </root>
+
+</configuration>

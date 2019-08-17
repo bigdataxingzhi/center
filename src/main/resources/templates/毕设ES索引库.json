@@ -1,0 +1,81 @@
+{
+  "javaee": {
+    "mappings": {
+      "knowledge": {
+        "properties": {
+          "author": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            },
+            "analyzer": "ik_max_word"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "docId": {
+            "type": "long"
+          },
+          "gainian": {
+            "type": "text",
+            "index": false
+          },
+          "info": {
+            "type": "keyword",
+            "index": false
+          },
+          "item": {
+            "type": "keyword"
+          },
+          "love": {
+            "type": "long"
+          },
+          "publishdate": {
+            "type": "date"
+          },
+          "searchId": {
+            "type": "long"
+          },
+          "subtitle": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            },
+            "analyzer": "ik_max_word"
+          },
+          "suggest": {
+            "type": "completion",
+            "analyzer": "simple",
+            "preserve_separators": true,
+            "preserve_position_increments": true,
+            "max_input_length": 50
+          },
+          "targrt": {
+            "type": "text",
+            "index": false
+          },
+          "title": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            },
+            "analyzer": "ik_max_word"
+          },
+          "use": {
+            "type": "text",
+            "index": false
+          }
+        }
+      }
+    }
+  }
+}
